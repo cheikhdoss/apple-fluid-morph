@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apple Fluid Morph · Live Interactive Showcase</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card: #121215;
+      --border: rgba(255, 255, 255, 0.1);
+      --accent: #10b981;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(18, 18, 21, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .badge {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-family: monospace;
+      font-weight: 600;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      gap: 2rem;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      max-width: 900px;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .control-group label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: monospace;
+      text-transform: uppercase;
+    }
+    .control-group input[type="range"] {
+      accent-color: var(--accent);
+      width: 140px;
+    }
+    .val-tag {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin-left: 0.5rem;
+    }
+    .btn-group {
+      display: flex;
+      background: rgba(0,0,0,0.4);
+      padding: 0.25rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+    .btn-group button {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-group button.active {
+      background: white;
+      color: black;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* MORPHING CHASSIS STYLES */
+    .viewport-stage {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 480px;
+      position: relative;
+    }
+    #chassis {
+      position: relative;
+      background: #000;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-radius 0.35s ease;
+    }
+    #screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0c0c0e;
+      display: flex;
+      flex-direction: column;
+    }
+    .mock-webpage {
+      width: 100%;
+      height: 100%;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: linear-gradient(145deg, #18181b, #09090b);
+      transform-origin: 0 0;
+    }
+    .mock-hero {
+      flex: 1;
+      border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1rem;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* DYNAMIC ISLAND CAPSULE */
+    .dynamic-island-anchor {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+    }
+    #island-pill {
+      height: 38px;
+      border-radius: 9999px;
+      background: rgba(12, 12, 14, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      user-select: none;
+    }
+    #island-collapsed {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: white;
+      position: absolute;
+    }
+    #island-expanded {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: absolute;
+      padding: 0 0.5rem;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1 style="font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em;">Apple Fluid Morph · ODE Physics Engine</h1>
+      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 2px;">Semi-Implicit Euler Integrator & Zero-Distortion Morphing</p>
+    </div>
+    <div class="badge">tau = 0.60s / 0.65s · zeta = 0.88 / 0.94</div>
+  </header>
+
+  <main>
+    <div class="controls">
+      <div class="control-group">
+        <label>Mode Appareil</label>
+        <div class="btn-group">
+          <button id="btn-mobile" onclick="setDevice('mobile')">Mobile (390)</button>
+          <button id="btn-tablet" onclick="setDevice('tablet')">Tablette (768)</button>
+          <button id="btn-desktop" class="active" onclick="setDevice('desktop')">Bureau (1080)</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Période &tau; (s) <span class="val-tag" id="val-tau">0.65s</span></label>
+        <input type="range" id="input-tau" min="0.3" max="1.2" step="0.05" value="0.65" oninput="updateParams()">
+      </div>
+
+      <div class="control-group">
+        <label>Amortissement &zeta; <span class="val-tag" id="val-zeta">0.94</span></label>
+        <input type="range" id="input-zeta" min="0.5" max="1.2" step="0.02" value="0.94" oninput="updateParams()">
+      </div>
+
+      <div class="control-group">
+        <label>Châssis Morphing</label>
+        <button onclick="triggerJolt()" style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">Impulsion Physique</button>
+      </div>
+    </div>
+
+    <div class="viewport-stage">
+      <div id="chassis" style="width: 820px; height: 500px; border-radius: 12px;">
+        <div id="screen" style="border-radius: 8px;">
+          <div class="mock-webpage" id="mock-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.75rem;">
+              <span style="font-weight: 700; font-size: 0.9rem; letter-spacing: -0.01em;">SAMA TEMPLATE</span>
+              <span style="font-size: 0.75rem; color: var(--accent); font-family: monospace;">● LIVE PREVIEW</span>
+            </div>
+            <div class="mock-hero">
+              <h2 style="font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em;">Zero Distortion Proportional Scaling</h2>
+              <p style="font-size: 0.85rem; color: var(--muted); max-width: 480px;">The viewport smoothly morphs with Apple spring dynamics while maintaining absolute aspect ratio fidelity (curScale = screenW / virtualW).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Apple Dynamic Island Floating Switcher -->
+    <div class="dynamic-island-anchor">
+      <div id="island-pill" style="width: 64px;" onclick="toggleIsland()">
+        <div id="island-collapsed">
+          <span style="font-size: 0.75rem;">🖥️</span>
+          <span class="pulse-dot"></span>
+        </div>
+        <div id="island-expanded">
+          <button onclick="event.stopPropagation(); setDevice('mobile');" style="background:transparent; border:none; color:white; font-size:0.75rem; padding:4px 8px; cursor:pointer;">Mobile</button>
+          <span style="color:rgba(255,255,255,0.2);">|</span>
+          <button onclick="event.stopPropagation(); setDevice('tablet');" style="background:transparent; border:none; color:white; font-size:0.75rem; padding:4px 8px; cursor:pointer;">Tablette</button>
+          <span style="color:rgba(255,255,255,0.2);">|</span>
+          <button onclick="event.stopPropagation(); setDevice('desktop');" style="background:transparent; border:none; color:white; font-size:0.75rem; padding:4px 8px; cursor:pointer;">Bureau</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 1. APPLE FLUID SPRING PHYSICS ODE
+    let tau = 0.65;
+    let zeta = 0.94;
+
+    const chassisState = {
+      w: 820, h: 500,
+      vW: 0, vH: 0,
+      targetW: 820, targetH: 500,
+      lastTime: null,
+      rafId: null
+    };
+
+    const pillState = {
+      w: 64,
+      vW: 0,
+      targetW: 64,
+      lastTime: null,
+      rafId: null
+    };
+
+    let isPillOpen = false;
+
+    function calcODE(response, damping) {
+      const omega_n = (2 * Math.PI) / response;
+      const k = omega_n * omega_n;
+      const c = 2 * damping * omega_n;
+      return { k, c };
+    }
+
+    function stepChassis(timestamp) {
+      if (!chassisState.lastTime) chassisState.lastTime = timestamp;
+      const dt = Math.min((timestamp - chassisState.lastTime) / 1000, 0.02);
+      chassisState.lastTime = timestamp;
+
+      const { k, c } = calcODE(tau, zeta);
+
+      // Width ODE
+      const fW = -k * (chassisState.w - chassisState.targetW) - c * chassisState.vW;
+      chassisState.vW += fW * dt;
+      chassisState.w += chassisState.vW * dt;
+
+      // Height ODE
+      const fH = -k * (chassisState.h - chassisState.targetH) - c * chassisState.vH;
+      chassisState.vH += fH * dt;
+      chassisState.h += chassisState.vH * dt;
+
+      const el = document.getElementById('chassis');
+      el.style.width = chassisState.w.toFixed(1) + 'px';
+      el.style.height = chassisState.h.toFixed(1) + 'px';
+
+      if (
+        Math.abs(chassisState.w - chassisState.targetW) < 0.25 &&
+        Math.abs(chassisState.vW) < 0.25 &&
+        Math.abs(chassisState.h - chassisState.targetH) < 0.25 &&
+        Math.abs(chassisState.vH) < 0.25
+      ) {
+        chassisState.w = chassisState.targetW;
+        chassisState.h = chassisState.targetH;
+        chassisState.vW = 0;
+        chassisState.vH = 0;
+        el.style.width = chassisState.targetW + 'px';
+        el.style.height = chassisState.targetH + 'px';
+        chassisState.rafId = null;
+        return;
+      }
+
+      chassisState.rafId = requestAnimationFrame(stepChassis);
+    }
+
+    function stepPill(timestamp) {
+      if (!pillState.lastTime) pillState.lastTime = timestamp;
+      const dt = Math.min((timestamp - pillState.lastTime) / 1000, 0.02);
+      pillState.lastTime = timestamp;
+
+      // Dynamic Island pill ODE: tau = 0.60, zeta = 0.88
+      const { k, c } = calcODE(0.60, 0.88);
+
+      const fW = -k * (pillState.w - pillState.targetW) - c * pillState.vW;
+      pillState.vW += fW * dt;
+      pillState.w += pillState.vW * dt;
+
+      const el = document.getElementById('island-pill');
+      el.style.width = pillState.w.toFixed(1) + 'px';
+
+      const progress = Math.max(0, Math.min(1, (pillState.w - 64) / (260 - 64)));
+      document.getElementById('island-collapsed').style.opacity = (1 - progress).toFixed(2);
+      document.getElementById('island-collapsed').style.transform = `scale(${(1 - progress * 0.25).toFixed(2)})`;
+      document.getElementById('island-expanded').style.opacity = progress.toFixed(2);
+      document.getElementById('island-expanded').style.transform = `scale(${(0.85 + progress * 0.15).toFixed(2)})`;
+
+      if (Math.abs(pillState.w - pillState.targetW) < 0.25 && Math.abs(pillState.vW) < 0.25) {
+        pillState.w = pillState.targetW;
+        pillState.vW = 0;
+        el.style.width = pillState.targetW + 'px';
+        pillState.rafId = null;
+        return;
+      }
+
+      pillState.rafId = requestAnimationFrame(stepPill);
+    }
+
+    function setDevice(device) {
+      document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-' + device);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const chassis = document.getElementById('chassis');
+      if (device === 'mobile') {
+        chassisState.targetW = 390;
+        chassisState.targetH = 680;
+        chassis.style.borderRadius = '36px';
+      } else if (device === 'tablet') {
+        chassisState.targetW = 640;
+        chassisState.targetH = 540;
+        chassis.style.borderRadius = '24px';
+      } else {
+        chassisState.targetW = 820;
+        chassisState.targetH = 500;
+        chassis.style.borderRadius = '12px';
+      }
+
+      if (!chassisState.rafId) {
+        chassisState.lastTime = null;
+        chassisState.rafId = requestAnimationFrame(stepChassis);
+      }
+
+      if (isPillOpen) {
+        setTimeout(() => { toggleIsland(false); }, 1000);
+      }
+    }
+
+    function toggleIsland(force) {
+      isPillOpen = typeof force === 'boolean' ? force : !isPillOpen;
+      pillState.targetW = isPillOpen ? 260 : 64;
+      document.getElementById('island-expanded').style.pointerEvents = isPillOpen ? 'auto' : 'none';
+
+      if (!pillState.rafId) {
+        pillState.lastTime = null;
+        pillState.rafId = requestAnimationFrame(stepPill);
+      }
+    }
+
+    function triggerJolt() {
+      chassisState.vW += 1200;
+      chassisState.vH += 800;
+      if (!chassisState.rafId) {
+        chassisState.lastTime = null;
+        chassisState.rafId = requestAnimationFrame(stepChassis);
+      }
+    }
+
+    function updateParams() {
+      tau = parseFloat(document.getElementById('input-tau').value);
+      zeta = parseFloat(document.getElementById('input-zeta').value);
+      document.getElementById('val-tau').innerText = tau.toFixed(2) + 's';
+      document.getElementById('val-zeta').innerText = zeta.toFixed(2);
+    }
+  </script>
+</body>
+</html>
