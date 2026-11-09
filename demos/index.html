@@ -8,12 +8,12 @@
     :root {
       --bg: #09090b;
       --card: #121215;
-      --border: rgba(255, 255, 255, 0.1);
+      --border: rgba(255, 255, 255, 0.12);
       --accent: #10b981;
       --text: #f4f4f5;
       --muted: #a1a1aa;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
     body {
       background: var(--bg);
       color: var(--text);
@@ -21,50 +21,61 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      user-select: none;
     }
     header {
-      padding: 1.5rem 2rem;
+      padding: 1rem 1.5rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(18, 18, 21, 0.8);
-      backdrop-filter: blur(12px);
+      background: rgba(12, 12, 14, 0.85);
+      backdrop-filter: blur(20px);
       position: sticky;
       top: 0;
       z-index: 40;
     }
     .badge {
-      background: rgba(16, 185, 129, 0.15);
+      background: rgba(16, 185, 129, 0.12);
       color: var(--accent);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      border: 1px solid rgba(16, 185, 129, 0.25);
       padding: 0.25rem 0.75rem;
       border-radius: 9999px;
       font-size: 0.75rem;
-      font-family: monospace;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
     }
     main {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
-      gap: 2rem;
+      padding: 1.5rem 1rem;
+      gap: 1.5rem;
     }
     .controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 1.5rem;
+      gap: 1.25rem;
       background: var(--card);
       border: 1px solid var(--border);
-      padding: 1rem 1.5rem;
+      padding: 0.85rem 1.25rem;
       border-radius: 1rem;
       max-width: 900px;
       width: 100%;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
     }
     .control-group {
       display: flex;
@@ -72,46 +83,53 @@
       gap: 0.35rem;
     }
     .control-group label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--muted);
-      font-family: monospace;
+      font-family: ui-monospace, monospace;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     .control-group input[type="range"] {
       accent-color: var(--accent);
-      width: 140px;
+      width: 130px;
+      cursor: pointer;
     }
     .val-tag {
-      font-size: 0.8rem;
-      font-weight: bold;
+      font-size: 0.75rem;
+      font-weight: 700;
       color: var(--accent);
-      margin-left: 0.5rem;
+      margin-left: 0.4rem;
     }
     .btn-group {
       display: flex;
-      background: rgba(0,0,0,0.4);
-      padding: 0.25rem;
+      background: rgba(0,0,0,0.5);
+      padding: 3px;
       border-radius: 9999px;
       border: 1px solid var(--border);
+      gap: 2px;
     }
     .btn-group button {
       background: transparent;
       border: none;
       color: var(--muted);
-      padding: 0.4rem 1rem;
+      padding: 0.35rem 0.9rem;
       border-radius: 9999px;
       font-size: 0.8rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: color 0.15s, background 0.15s;
+    }
+    .btn-group button:hover {
+      color: white;
     }
     .btn-group button.active {
       background: white;
       color: black;
-      font-weight: 600;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
-    /* MORPHING CHASSIS STYLES */
+    /* MORPHING CHASSIS STYLES (GPU ACCELERATED) */
     .viewport-stage {
       flex: 1;
       width: 100%;
@@ -123,14 +141,15 @@
     }
     #chassis {
       position: relative;
-      background: #000;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95);
+      background: #000000;
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.95);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: border-radius 0.35s ease;
+      will-change: width, height, border-radius;
+      transform: translateZ(0);
     }
     #screen {
       position: relative;
@@ -139,30 +158,96 @@
       overflow: hidden;
       background: #0c0c0e;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      will-change: border-radius;
+      transform: translateZ(0);
+    }
+    #mock-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 820px;
+      height: 500px;
+      transform-origin: 0 0;
+      will-change: transform;
+      transform: translateZ(0);
     }
     .mock-webpage {
-      width: 100%;
-      height: 100%;
+      width: 820px;
+      height: 500px;
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      background: linear-gradient(145deg, #18181b, #09090b);
-      transform-origin: 0 0;
+      gap: 1.25rem;
+      background: linear-gradient(135deg, #18181c 0%, #0d0d10 100%);
     }
     .mock-hero {
       flex: 1;
-      border: 1px dashed rgba(255,255,255,0.15);
-      border-radius: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 1rem;
-      gap: 0.5rem;
-      background: rgba(255,255,255,0.02);
+      padding: 1.5rem;
+      gap: 0.75rem;
+      background: rgba(255,255,255,0.025);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .mock-tag {
+      font-size: 0.7rem;
+      font-family: ui-monospace, monospace;
+      color: #34d399;
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+      padding: 3px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .mock-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      width: 100%;
+    }
+    .mock-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.75rem;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      text-align: left;
+    }
+
+    /* HARDWARE BEZELS (iPad Camera & Buttons, macOS Lights, iPhone notch) */
+    #bezel-tablet {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 20;
+    }
+    #bezel-laptop {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 20;
+    }
+    #bezel-phone {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 20;
     }
 
     /* DYNAMIC ISLAND CAPSULE */
@@ -176,9 +261,9 @@
     #island-pill {
       height: 38px;
       border-radius: 9999px;
-      background: rgba(12, 12, 14, 0.92);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(12, 12, 14, 0.94);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
       box-shadow: 0 16px 40px rgba(0,0,0,0.85);
       display: flex;
       align-items: center;
@@ -187,6 +272,8 @@
       overflow: hidden;
       position: relative;
       user-select: none;
+      will-change: width;
+      transform: translateZ(0);
     }
     #island-collapsed {
       display: flex;
@@ -195,15 +282,38 @@
       font-size: 0.75rem;
       color: white;
       position: absolute;
+      pointer-events: none;
+      will-change: opacity, transform;
     }
     #island-expanded {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
       position: absolute;
       padding: 0 0.5rem;
       opacity: 0;
       pointer-events: none;
+      will-change: opacity, transform;
+    }
+    #island-expanded button {
+      background: transparent;
+      border: none;
+      color: #a1a1aa;
+      font-size: 0.75rem;
+      font-family: ui-monospace, monospace;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    #island-expanded button:hover {
+      color: white;
+      background: rgba(255,255,255,0.1);
+    }
+    #island-expanded button.active {
+      color: black;
+      background: white;
+      font-weight: 700;
     }
     .pulse-dot {
       width: 6px;
@@ -218,10 +328,13 @@
 
   <header>
     <div>
-      <h1 style="font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em;">Apple Fluid Morph · ODE Physics Engine</h1>
-      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 2px;">Semi-Implicit Euler Integrator & Zero-Distortion Morphing</p>
+      <h1 style="font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em;">Apple Fluid Morph · Physics ODE</h1>
+      <p style="font-size: 0.75rem; color: var(--muted); margin-top: 1px;">Semi-Implicit Euler Integrator & Zero-Distortion Morphing</p>
     </div>
-    <div class="badge">tau = 0.60s / 0.65s · zeta = 0.88 / 0.94</div>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      <span>60 FPS Symplectic ODE</span>
+    </div>
   </header>
 
   <main>
@@ -230,8 +343,8 @@
         <label>Mode Appareil</label>
         <div class="btn-group">
           <button id="btn-mobile" onclick="setDevice('mobile')">Mobile (390)</button>
-          <button id="btn-tablet" onclick="setDevice('tablet')">Tablette (768)</button>
-          <button id="btn-desktop" class="active" onclick="setDevice('desktop')">Bureau (1080)</button>
+          <button id="btn-tablet" onclick="setDevice('tablet')">Tablette (640)</button>
+          <button id="btn-desktop" class="active" onclick="setDevice('desktop')">Bureau (820)</button>
         </div>
       </div>
 
@@ -246,41 +359,82 @@
       </div>
 
       <div class="control-group">
-        <label>Châssis Morphing</label>
-        <button onclick="triggerJolt()" style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">Impulsion Physique</button>
+        <label>Simulation</label>
+        <button onclick="triggerJolt()" style="padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.08); border: 1px solid var(--border); color: white; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 500;">Impulsion Physique</button>
       </div>
     </div>
 
     <div class="viewport-stage">
+      <!-- MORPHING CHASSIS -->
       <div id="chassis" style="width: 820px; height: 500px; border-radius: 12px;">
+        <!-- HARDWARE BEZELS -->
+        <div id="bezel-laptop">
+          <div style="position:absolute; top:8px; left:12px; display:flex; gap:6px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#ff5f57;"></span>
+            <span style="width:8px; height:8px; border-radius:50%; background:#febc2e;"></span>
+            <span style="width:8px; height:8px; border-radius:50%; background:#28c840;"></span>
+          </div>
+          <div style="position:absolute; top:8px; left:50%; transform:translateX(-50%); width:6px; height:6px; border-radius:50%; background:#1c1c1e; border:1px solid #3a3a3c;"></div>
+        </div>
+
+        <div id="bezel-tablet">
+          <div style="position:absolute; top:8px; left:50%; transform:translateX(-50%); width:6px; height:6px; border-radius:50%; background:#1c1c1e; border:1px solid #3a3a3c;"></div>
+          <div style="position:absolute; right:-2px; top:60px; width:2px; height:24px; background:#52525b; border-radius:0 2px 2px 0;"></div>
+        </div>
+
+        <div id="bezel-phone">
+          <div style="position:absolute; top:8px; left:50%; transform:translateX(-50%); width:48px; height:4px; border-radius:9999px; background:#27272a; border:1px solid #3f3f46;"></div>
+          <div style="position:absolute; bottom:6px; left:50%; transform:translateX(-50%); width:96px; height:3px; border-radius:9999px; background:rgba(255,255,255,0.3);"></div>
+        </div>
+
+        <!-- SCREEN WITH UNIFORM SCALED CONTENT -->
         <div id="screen" style="border-radius: 8px;">
-          <div class="mock-webpage" id="mock-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.75rem;">
-              <span style="font-weight: 700; font-size: 0.9rem; letter-spacing: -0.01em;">SAMA TEMPLATE</span>
-              <span style="font-size: 0.75rem; color: var(--accent); font-family: monospace;">● LIVE PREVIEW</span>
-            </div>
-            <div class="mock-hero">
-              <h2 style="font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em;">Zero Distortion Proportional Scaling</h2>
-              <p style="font-size: 0.85rem; color: var(--muted); max-width: 480px;">The viewport smoothly morphs with Apple spring dynamics while maintaining absolute aspect ratio fidelity (curScale = screenW / virtualW).</p>
+          <div id="mock-wrapper">
+            <div class="mock-webpage">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.75rem;">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span style="font-weight: 800; font-size: 0.95rem; letter-spacing: -0.02em;">SAMA MOTION</span>
+                  <span class="mock-tag">Physics ODE</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--accent); font-family: ui-monospace, monospace;">● 0ms LATENCY POSTER</span>
+              </div>
+              <div class="mock-hero">
+                <h2 style="font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em;">Zero-Distortion Proportional Morphing</h2>
+                <p style="font-size: 0.8rem; color: var(--muted); max-width: 520px; line-height: 1.4;">
+                  The viewport smoothly morphs with Apple Fluid Spring dynamics (&tau;=0.65s, &zeta;=0.94) while maintaining strict aspect-ratio proportionality: <code style="color:#34d399; font-family:ui-monospace;">curScale = screenW / virtualW</code>.
+                </p>
+              </div>
+              <div class="mock-cards">
+                <div class="mock-card">
+                  <span style="font-size: 0.7rem; color: #a1a1aa; font-family:ui-monospace;">ODE DYNAMICS</span>
+                  <span style="font-size: 0.85rem; font-weight: 700;">Semi-Implicit Euler</span>
+                </div>
+                <div class="mock-card">
+                  <span style="font-size: 0.7rem; color: #a1a1aa; font-family:ui-monospace;">CAPSULE PILL</span>
+                  <span style="font-size: 0.85rem; font-weight: 700;">Dynamic Island (0.60s)</span>
+                </div>
+                <div class="mock-card">
+                  <span style="font-size: 0.7rem; color: #a1a1aa; font-family:ui-monospace;">MEMORY PURGE</span>
+                  <span style="font-size: 0.85rem; font-weight: 700;">WebKit Jetsam Guard</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Apple Dynamic Island Floating Switcher -->
+    <!-- APPLE DYNAMIC ISLAND SWITCHER -->
     <div class="dynamic-island-anchor">
       <div id="island-pill" style="width: 64px;" onclick="toggleIsland()">
         <div id="island-collapsed">
-          <span style="font-size: 0.75rem;">🖥️</span>
+          <span style="font-size: 0.8rem;">🖥️</span>
           <span class="pulse-dot"></span>
         </div>
         <div id="island-expanded">
-          <button onclick="event.stopPropagation(); setDevice('mobile');" style="background:transparent; border:none; color:white; font-size:0.75rem; padding:4px 8px; cursor:pointer;">Mobile</button>
-          <span style="color:rgba(255,255,255,0.2);">|</span>
-          <button onclick="event.stopPropagation(); setDevice('tablet');" style="background:transparent; border:none; color:white; font-size:0.75rem; padding:4px 8px; cursor:pointer;">Tablette</button>
-          <span style="color:rgba(255,255,255,0.2);">|</span>
-          <button onclick="event.stopPropagation(); setDevice('desktop');" style="background:transparent; border:none; color:white; font-size:0.75rem; padding:4px 8px; cursor:pointer;">Bureau</button>
+          <button id="pill-mobile" onclick="event.stopPropagation(); setDevice('mobile');">Mobile</button>
+          <button id="pill-tablet" onclick="event.stopPropagation(); setDevice('tablet');">Tablette</button>
+          <button id="pill-desktop" class="active" onclick="event.stopPropagation(); setDevice('desktop');">Bureau</button>
         </div>
       </div>
     </div>
@@ -290,32 +444,32 @@
     // 1. APPLE FLUID SPRING PHYSICS ODE
     let tau = 0.65;
     let zeta = 0.94;
+    let currentDevice = 'desktop';
 
     const chassisState = {
-      w: 820, h: 500,
-      vW: 0, vH: 0,
-      targetW: 820, targetH: 500,
+      w: 820, h: 500, rad: 12,
+      vW: 0, vH: 0, vRad: 0,
+      targetW: 820, targetH: 500, targetRad: 12,
       lastTime: null,
       rafId: null
     };
 
     const pillState = {
-      w: 64,
-      vW: 0,
-      targetW: 64,
-      lastTime: null,
-      rafId: null
+      w: 64, vW: 0, targetW: 64,
+      lastTime: null, rafId: null
     };
 
     let isPillOpen = false;
+    let autoRetractTimer = null;
 
     function calcODE(response, damping) {
-      const omega_n = (2 * Math.PI) / response;
+      const omega_n = (2 * Math.PI) / Math.max(0.01, response);
       const k = omega_n * omega_n;
       const c = 2 * damping * omega_n;
       return { k, c };
     }
 
+    // Step Chassis ODE (Direct GPU injection, Zero Layout Reflows)
     function stepChassis(timestamp) {
       if (!chassisState.lastTime) chassisState.lastTime = timestamp;
       const dt = Math.min((timestamp - chassisState.lastTime) / 1000, 0.02);
@@ -333,10 +487,25 @@
       chassisState.vH += fH * dt;
       chassisState.h += chassisState.vH * dt;
 
+      // Radius ODE
+      const fRad = -k * (chassisState.rad - chassisState.targetRad) - c * chassisState.vRad;
+      chassisState.vRad += fRad * dt;
+      chassisState.rad += chassisState.vRad * dt;
+
       const el = document.getElementById('chassis');
+      const screenEl = document.getElementById('screen');
+      const wrapperEl = document.getElementById('mock-wrapper');
+
       el.style.width = chassisState.w.toFixed(1) + 'px';
       el.style.height = chassisState.h.toFixed(1) + 'px';
+      el.style.borderRadius = chassisState.rad.toFixed(1) + 'px';
+      screenEl.style.borderRadius = Math.max(0, chassisState.rad - 4).toFixed(1) + 'px';
 
+      // Zero-Distortion Proportional Scaling Formula
+      const curScale = (chassisState.w - 8) / 820;
+      wrapperEl.style.transform = `scale(${curScale.toFixed(4)}) translateZ(0)`;
+
+      // Energy Threshold Early Exit
       if (
         Math.abs(chassisState.w - chassisState.targetW) < 0.25 &&
         Math.abs(chassisState.vW) < 0.25 &&
@@ -345,10 +514,16 @@
       ) {
         chassisState.w = chassisState.targetW;
         chassisState.h = chassisState.targetH;
+        chassisState.rad = chassisState.targetRad;
         chassisState.vW = 0;
         chassisState.vH = 0;
+        chassisState.vRad = 0;
         el.style.width = chassisState.targetW + 'px';
         el.style.height = chassisState.targetH + 'px';
+        el.style.borderRadius = chassisState.targetRad + 'px';
+        screenEl.style.borderRadius = Math.max(0, chassisState.targetRad - 4) + 'px';
+        const finalScale = (chassisState.targetW - 8) / 820;
+        wrapperEl.style.transform = `scale(${finalScale.toFixed(4)}) translateZ(0)`;
         chassisState.rafId = null;
         return;
       }
@@ -356,12 +531,12 @@
       chassisState.rafId = requestAnimationFrame(stepChassis);
     }
 
+    // Step Dynamic Island Pill ODE (tau=0.60, zeta=0.88)
     function stepPill(timestamp) {
       if (!pillState.lastTime) pillState.lastTime = timestamp;
       const dt = Math.min((timestamp - pillState.lastTime) / 1000, 0.02);
       pillState.lastTime = timestamp;
 
-      // Dynamic Island pill ODE: tau = 0.60, zeta = 0.88
       const { k, c } = calcODE(0.60, 0.88);
 
       const fW = -k * (pillState.w - pillState.targetW) - c * pillState.vW;
@@ -371,11 +546,11 @@
       const el = document.getElementById('island-pill');
       el.style.width = pillState.w.toFixed(1) + 'px';
 
-      const progress = Math.max(0, Math.min(1, (pillState.w - 64) / (260 - 64)));
-      document.getElementById('island-collapsed').style.opacity = (1 - progress).toFixed(2);
-      document.getElementById('island-collapsed').style.transform = `scale(${(1 - progress * 0.25).toFixed(2)})`;
-      document.getElementById('island-expanded').style.opacity = progress.toFixed(2);
-      document.getElementById('island-expanded').style.transform = `scale(${(0.85 + progress * 0.15).toFixed(2)})`;
+      const progress = Math.max(0, Math.min(1, (pillState.w - 64) / (270 - 64)));
+      document.getElementById('island-collapsed').style.opacity = (1 - progress).toFixed(3);
+      document.getElementById('island-collapsed').style.transform = `scale(${(1 - progress * 0.25).toFixed(3)})`;
+      document.getElementById('island-expanded').style.opacity = progress.toFixed(3);
+      document.getElementById('island-expanded').style.transform = `scale(${(0.85 + progress * 0.15).toFixed(3)})`;
 
       if (Math.abs(pillState.w - pillState.targetW) < 0.25 && Math.abs(pillState.vW) < 0.25) {
         pillState.w = pillState.targetW;
@@ -388,52 +563,72 @@
       pillState.rafId = requestAnimationFrame(stepPill);
     }
 
+    // Instant Responsive State Switch
     function setDevice(device) {
+      currentDevice = device;
+
+      // Update button active state in 0ms
       document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
       const activeBtn = document.getElementById('btn-' + device);
       if (activeBtn) activeBtn.classList.add('active');
 
-      const chassis = document.getElementById('chassis');
+      document.querySelectorAll('#island-expanded button').forEach(b => b.classList.remove('active'));
+      const pillActiveBtn = document.getElementById('pill-' + device);
+      if (pillActiveBtn) pillActiveBtn.classList.add('active');
+
+      // Update bezel visibility
+      document.getElementById('bezel-laptop').style.opacity = device === 'desktop' ? '1' : '0';
+      document.getElementById('bezel-tablet').style.opacity = device === 'tablet' ? '1' : '0';
+      document.getElementById('bezel-phone').style.opacity = device === 'mobile' ? '1' : '0';
+
+      // Soft velocity dampening on mid-flight direction change to prevent jerking
+      chassisState.vW *= 0.5;
+      chassisState.vH *= 0.5;
+      chassisState.vRad *= 0.5;
+
       if (device === 'mobile') {
         chassisState.targetW = 390;
         chassisState.targetH = 680;
-        chassis.style.borderRadius = '36px';
+        chassisState.targetRad = 36;
       } else if (device === 'tablet') {
         chassisState.targetW = 640;
         chassisState.targetH = 540;
-        chassis.style.borderRadius = '24px';
+        chassisState.targetRad = 24;
       } else {
         chassisState.targetW = 820;
         chassisState.targetH = 500;
-        chassis.style.borderRadius = '12px';
+        chassisState.targetRad = 12;
       }
 
+      chassisState.lastTime = null;
       if (!chassisState.rafId) {
-        chassisState.lastTime = null;
         chassisState.rafId = requestAnimationFrame(stepChassis);
       }
 
+      // Auto-retract pill 1s after selection
       if (isPillOpen) {
-        setTimeout(() => { toggleIsland(false); }, 1000);
+        if (autoRetractTimer) clearTimeout(autoRetractTimer);
+        autoRetractTimer = setTimeout(() => { toggleIsland(false); }, 1000);
       }
     }
 
     function toggleIsland(force) {
       isPillOpen = typeof force === 'boolean' ? force : !isPillOpen;
-      pillState.targetW = isPillOpen ? 260 : 64;
+      pillState.targetW = isPillOpen ? 270 : 64;
       document.getElementById('island-expanded').style.pointerEvents = isPillOpen ? 'auto' : 'none';
 
+      pillState.vW *= 0.4;
+      pillState.lastTime = null;
       if (!pillState.rafId) {
-        pillState.lastTime = null;
         pillState.rafId = requestAnimationFrame(stepPill);
       }
     }
 
     function triggerJolt() {
-      chassisState.vW += 1200;
-      chassisState.vH += 800;
+      chassisState.vW += 900;
+      chassisState.vH += 600;
+      chassisState.lastTime = null;
       if (!chassisState.rafId) {
-        chassisState.lastTime = null;
         chassisState.rafId = requestAnimationFrame(stepChassis);
       }
     }
@@ -444,6 +639,9 @@
       document.getElementById('val-tau').innerText = tau.toFixed(2) + 's';
       document.getElementById('val-zeta').innerText = zeta.toFixed(2);
     }
+
+    // Init bezels on load
+    document.getElementById('bezel-laptop').style.opacity = '1';
   </script>
 </body>
 </html>
