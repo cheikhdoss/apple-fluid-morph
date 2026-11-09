@@ -1,7 +1,7 @@
 # Apple Fluid Morph · Universal AI Agent Skill & Engine
 
 <p align="center">
-  <img src="assets/screenshots/fixed_02_tablet_settled.png" alt="Apple Fluid Morphing Preview" width="800" style="border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);" />
+  <img src="assets/apple-fluid-morph-demo.gif" alt="Apple Fluid Morphing Live Demo" width="800" style="border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.15);" />
 </p>
 
 <p align="center">
@@ -10,6 +10,7 @@
   <a href="https://github.com/cheikhdoss/apple-fluid-morph"><img src="https://img.shields.io/badge/Physics-Apple%20Spring%20ODE-black.svg" alt="Physics ODE"></a>
   <a href="https://github.com/cheikhdoss/apple-fluid-morph"><img src="https://img.shields.io/badge/Scaling-Zero%20Distortion-teal.svg" alt="Zero Distortion"></a>
   <a href="https://github.com/cheikhdoss/apple-fluid-morph"><img src="https://img.shields.io/badge/ProMotion-120Hz%20Tested-purple.svg" alt="120Hz Verified"></a>
+  <a href="assets/apple-fluid-morph-demo.mp4"><img src="https://img.shields.io/badge/Video-MP4%20(569KB)-red.svg" alt="Direct MP4 Video"></a>
 </p>
 
 ---
@@ -22,24 +23,16 @@ Designed to be loaded by autonomous coding agents (**Google Antigravity**, **Cur
 
 ---
 
-## 📸 Visual Showcase & Benchmarks
+## 🎬 Live Motion & Window Morphing Showcase
 
-| 1. Dynamic Island Capsule (64px) | 2. Expanded Switcher (280px) |
-| :---: | :---: |
-| ![Bubble Resting](assets/screenshots/fixed_bubble_resting.png) | ![Pill Expanded](assets/screenshots/fixed_pill_expanded.png) |
-| *Compact bubble with ambient pulse* | *Segmented tactile switcher (auto-retract 1.0s)* |
+The recording above demonstrates real-time state changes and liquid transitions executed by the physical engine:
 
-| 3. iPad Glass Chassis | 4. MacBook Pro Bezel |
-| :---: | :---: |
-| ![iPad Tablet](assets/screenshots/fixed_02_tablet_settled.png) | ![MacBook Pro](assets/screenshots/fixed_03_laptop_settled.png) |
-| *Smoky glass, camera, side buttons, backglow* | *macOS traffic lights, webcam, aluminum hinge* |
+1. **Fluid Window Morphing**: Seamless transitions between **Bureau (1080px)**, **Tablette (768px)**, and **Mobile (390px)** governed by the continuous Apple Spring ODE ($\tau = 0.65\text{s}, \zeta = 0.94$).
+2. **Dynamic Island Switcher**: The floating capsule springs from a 64px resting bubble to a 280px 3-option selector ($\tau = 0.60\text{s}, \zeta = 0.88$), triggers the chassis morph, and automatically retracts after 1.0s.
+3. **Zero Distortion**: Proportional uniform scaling ($curScale = screenW / virtualW$) ensures typography and buttons never stretch or distort during animation.
+4. **Physical Impulse Response**: Live recovery from sudden layout disturbances or viewport jolts.
 
-| 5. iPhone Titanium Mockup | 6. Fullscreen Edge-to-Edge |
-| :---: | :---: |
-| ![iPhone View](assets/screenshots/fixed_mobile_view.png) | ![Startup Fullscreen](assets/screenshots/fixed_01_startup_fullscreen.png) |
-| *Titanium bezel with ear-speaker slit* | *Edge-to-edge mobile mode without black bars* |
-
-> 📸 **Visual Proof**: Check the benchmark gallery in `assets/screenshots/` for pixel-accurate Retina captures of the 1s auto-retracting island and multi-device chassis.
+> 📹 **High-Definition Video**: Download the lightweight [Direct MP4 Video (569 KB)](assets/apple-fluid-morph-demo.mp4) or test it locally with `demos/index.html`.
 
 ---
 
